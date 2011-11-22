@@ -5,7 +5,7 @@ package minestation;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
-
+import java.util.*;
 import javax.swing.*;
 
 import net.miginfocom.swing.MigLayout;
@@ -23,29 +23,42 @@ public class Minestation implements ActionListener {
 	
 	
 	
-	public static int time;
-	public static int raintime;
-	public static int thundertime;
+	public static long time;
+	public static long raintime;
+	public static long thundertime;
+	public static int thundering;
+	public static int raining;
+	public static double posX;
+	public static double posY;
+	public static double posZ;
+	public static String worldName;
+	public static int day;
+	public static int month;
+	public static int year;
+	public static int hour;
+	public static int minutes;
+	public static int moon;
+	public static int sun;
 	
-	private Tag main;
-	private JFrame frame;
-	private JPanel panel;
-	private JTextField Timetext;
-	private JTextField Stormtext;
-	private JTextField Raintext;
+	public static Tag main;
+	public static JFrame frame;
+	public static JPanel panel;
+	public static JTextField Timetext;
+	public static JTextField Stormtext;
+	public static JTextField Raintext;
 	
-	private String savePath;
-	private String[] filePaths;
-	private String lastFolder;
+	public static String savePath;
+	public static String[] filePaths;
+	public static String lastFolder;
 	private int validNames;
-	private JLabel label1;
-	private JLabel TimeLabel;
-	private JLabel RainLabel;
-	private JLabel StormLabel;	
+	public static JLabel label1;
+	public static JLabel TimeLabel;
+	public static JLabel RainLabel;
+	public static JLabel StormLabel;	
 
-	private JComboBox combo;
-	private JComboBox comboPort;
-	private JLabel portLabel;
+	public static JComboBox combo;
+	public static JComboBox comboPort;
+	public static JLabel portLabel;
 //	private JCheckBox cbCreative;
 //	private boolean creativeEnabled;
 //	private boolean hardcoreEnabled;
@@ -53,11 +66,11 @@ public class Minestation implements ActionListener {
 										//If these tags are not changed properly, Creative mode
 										//abilities can be enabled in Survival mode.
 	
-	private JButton btnStart;
-	private JButton btnStop;
-	private JButton btnRead;
-	private JButton btnWrite;
-	private String selectedFilePath;
+	public static JButton btnStart;
+	public static JButton btnStop;
+	public static JButton btnRead;
+	public static JButton btnWrite;
+	public static String selectedFilePath;
 	
 	private final String version = "0.1";
 	private Serial serialPort = new Serial();  //Serial port class
@@ -361,14 +374,74 @@ public class Minestation implements ActionListener {
 		
 		return false;
 	}
-	public void putData(){
-		sendData();
-	}
 	
-	public  void sendData(){
-		Timetext.setText(main.findTagByName("Time").getValue().toString());
-		Raintext.setText(main.findTagByName("rainTime").getValue().toString());
-		Stormtext.setText(main.findTagByName("thunderTime").getValue().toString());	
+	public static double Redondear(double numero)
+	{
+	      return Math.rint(numero*1000)/1000;
+	}
+
+	public static void sendData(){
+		int tmp,tmp2,tmp3;
+		time=Integer.parseInt(main.findTagByName("Time").getValue().toString());
+		raintime=Integer.parseInt(main.findTagByName("rainTime").getValue().toString());
+		thundertime=Integer.parseInt(main.findTagByName("thunderTime").getValue().toString());
+		
+		Timetext.setText(String.valueOf(time));
+		Raintext.setText(String.valueOf(raintime));
+		Stormtext.setText(String.valueOf(thundertime));
+		
+		try {
+			int val = combo.getSelectedIndex();
+			if ((val<0) && (combo.getItemCount()>-1)) combo.getItemAt(0);
+			
+			selectedFilePath = filePaths[val];
+			FileInputStream fis = new FileInputStream(new File(selectedFilePath));
+			main = Tag.readFrom(fis);
+			fis.close();
+			
+			time=Integer.parseInt(main.findTagByName("Time").getValue().toString());
+			raintime=Integer.parseInt(main.findTagByName("rainTime").getValue().toString());
+			thundertime=Integer.parseInt(main.findTagByName("thunderTime").getValue().toString());
+			tmp = (int)((time-16000) / 24000);
+			minutes = (int)(((time % 1000) / 40) * 2.4);
+			day = (tmp % 30) +1;
+			tmp2 = tmp > 30 ? tmp / 30 : 1;
+			month = tmp2 > 12 ? tmp2 % 12 : tmp2;
+			year = (month > 12) ? month / 12 : 0;
+			int diff = (int)(time % 24000);
+			hour = (diff < 1000) ? 8 : (diff/1000) + 8;
+			hour = (hour>24) ? hour -= 24 : hour;
+			sun = ((diff>=0 && diff<13800) || (diff>=23000 && diff<=24000)) ? 1 : 0;
+			moon = (diff>=13800 && diff<23000) ? 1 : 0; // night is a bit shorten than daytime!
+			
+			Timetext.setText(String.valueOf(time));
+			Raintext.setText(String.valueOf(raintime));
+			Stormtext.setText(String.valueOf(thundertime));
+			Tag pos = main.findTagByName( "Player" ).findTagByName( "Pos" );
+			Tag[] subtags = (Tag[]) pos.getValue();
+			posX=Redondear(Double.parseDouble(subtags[0].getValue().toString()));
+			posY=Redondear(Double.parseDouble(subtags[1].getValue().toString()));
+			posZ=Redondear(Double.parseDouble(subtags[2].getValue().toString()));
+			System.out.println(hour+":"+minutes);
+			System.out.println(day+"/"+month+"/"+year);
+			System.out.println("sun:"+sun);
+			System.out.println("moon:"+moon);
+			System.out.println(posX);
+			System.out.println(posY);
+			System.out.println(posZ);
+
+		/*	for (Tag st : subtags) {
+				st.print();
+			}*/
+			
+
+
+			
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	
@@ -444,17 +517,28 @@ public class Minestation implements ActionListener {
 				
 			}
 			
-			if(cmd.equals("write"))
+			if(cmd.equals("Write"))
 			{
-				/*int chosen = JOptionPane.showConfirmDialog(frame, "Are you sure you want to overwrite your save file?", 
+				int chosen = JOptionPane.showConfirmDialog(frame, "Are you sure you want to overwrite your save file?", 
 						"Overwrite", JOptionPane.YES_NO_OPTION);
 				
 				if(chosen == JOptionPane.YES_OPTION);
 				{
 					try {
+						timerPort.stop();
+						Tag temp=main.findTagByName("Time");
+						temp.setValue((long)Integer.parseInt(Timetext.getText()));
+						Tag temp1=main.findTagByName("rainTime");
+						temp1.setValue((int)Integer.parseInt(Raintext.getText()));
+						Tag temp2=main.findTagByName("thunderTime");
+						temp2.setValue((int)Integer.parseInt(Stormtext.getText()));
+
+						
+						main.print();
+						
 						FileOutputStream fos = new FileOutputStream(new File(selectedFilePath));
-						main.writeTo(fos);
-						fos.close();
+						main.writeTo(fos);/*
+						fos.close();*/
 					} catch (FileNotFoundException e) {
 						// TODO Auto-generated catch block
 						JOptionPane.showMessageDialog(null, "Problem saving file: File Not Found", "File Not Found", JOptionPane.ERROR_MESSAGE);
@@ -464,7 +548,7 @@ public class Minestation implements ActionListener {
 					}
 					
 					JOptionPane.showMessageDialog(frame, "File saved!");
-				}*/
+				}
 			}
 			
 			//Stop button pressed
@@ -487,7 +571,7 @@ public class Minestation implements ActionListener {
 					FileInputStream fis = new FileInputStream(new File(selectedFilePath));
 					main = Tag.readFrom(fis);
 					fis.close();
-					
+					main.print();
 					Timetext.setText(main.findTagByName("Time").getValue().toString());
 					Raintext.setText(main.findTagByName("rainTime").getValue().toString());
 					Stormtext.setText(main.findTagByName("thunderTime").getValue().toString());
@@ -499,6 +583,7 @@ public class Minestation implements ActionListener {
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
+				
 			}
 			
 		} // else

@@ -2,7 +2,7 @@ package minestation;
 //import java.io.IOException;
 //import java.util.Timer;
 //import java.util.TimerTask;
-import java.util.Date;
+//import java.util.Date;
 import java.awt.event.*;
 import javax.swing.*;
  
@@ -51,9 +51,9 @@ import javax.swing.*;
 	}// end Reset*/
     public void actionPerformed(ActionEvent e) {
     	if (e.getSource() == timer) { 
-//			putData();
-			segundos++;
-    		System.out.println(segundos);
+			Minestation.sendData();
+		//	segundos++;
+    	//	System.out.println(segundos);
     	}
       }
 }// end Reloj
