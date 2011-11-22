@@ -39,7 +39,7 @@ public class Minestation implements ActionListener {
 	public static int minutes;
 	public static int moon;
 	public static int sun;
-	
+	public static String streamData;
 	public static Tag main;
 	public static JFrame frame;
 	public static JPanel panel;
@@ -382,6 +382,7 @@ public class Minestation implements ActionListener {
 
 	public static void sendData(){
 		int tmp,tmp2,tmp3;
+		String strTmp;
 		time=Integer.parseInt(main.findTagByName("Time").getValue().toString());
 		raintime=Integer.parseInt(main.findTagByName("rainTime").getValue().toString());
 		thundertime=Integer.parseInt(main.findTagByName("thunderTime").getValue().toString());
@@ -402,6 +403,9 @@ public class Minestation implements ActionListener {
 			time=Integer.parseInt(main.findTagByName("Time").getValue().toString());
 			raintime=Integer.parseInt(main.findTagByName("rainTime").getValue().toString());
 			thundertime=Integer.parseInt(main.findTagByName("thunderTime").getValue().toString());
+			raining=Integer.parseInt(main.findTagByName("raining").getValue().toString());
+			thundering=Integer.parseInt(main.findTagByName("thundering").getValue().toString());
+			worldName=main.findTagByName("LevelName").getValue().toString();
 			tmp = (int)((time-16000) / 24000);
 			minutes = (int)(((time % 1000) / 40) * 2.4);
 			day = (tmp % 30) +1;
@@ -422,6 +426,11 @@ public class Minestation implements ActionListener {
 			posX=Redondear(Double.parseDouble(subtags[0].getValue().toString()));
 			posY=Redondear(Double.parseDouble(subtags[1].getValue().toString()));
 			posZ=Redondear(Double.parseDouble(subtags[2].getValue().toString()));
+			streamData="@"+(Long.toString(time))+","+(Integer.toString(minutes))+","+(Integer.toString(hour))+
+					","+(Integer.toString(day))+","+(Integer.toString(month))+","+(Integer.toString(year))+","+
+					(Integer.toString(sun))+","+(Integer.toString(moon))+","+(Long.toString(raintime))+","+
+					(Long.toString(thundertime))+","+(Integer.toString(raining))+","+(Integer.toString(thundering))+
+					","+(Double.toString(posX))+","+(Double.toString(posY))+","+(Double.toString(posZ))+","+"0,"+worldName+"#";
 			System.out.println(hour+":"+minutes);
 			System.out.println(day+"/"+month+"/"+year);
 			System.out.println("sun:"+sun);
@@ -429,7 +438,9 @@ public class Minestation implements ActionListener {
 			System.out.println(posX);
 			System.out.println(posY);
 			System.out.println(posZ);
-
+			System.out.println(thundering);
+			System.out.println(raining);
+			System.out.println(streamData);
 		/*	for (Tag st : subtags) {
 				st.print();
 			}*/
