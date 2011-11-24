@@ -25,6 +25,7 @@ public class Serial implements SerialPortEventListener {
 	private static final int TIME_OUT = 2000;
 	/** Default bits per second for COM port. */
 	private static final int DATA_RATE = 9600;
+	private boolean portEnable=false;
 
 	public String[] list(){
 		int cnt=0;
@@ -39,6 +40,20 @@ public class Serial implements SerialPortEventListener {
 		return PortNames;
 		
 	}
+	
+	public boolean enabled(){
+		return portEnable;
+	}
+	
+	public void outData(String datap){
+		  try {
+		         // write string to serial port
+		         output.write(datap.getBytes());
+		      } catch (Exception e) {
+		    	  System.err.println(e.toString());
+		      }
+	}
+	
 	
 	public void initialize(String portName) {
 
@@ -77,6 +92,7 @@ public class Serial implements SerialPortEventListener {
 			// add event listeners
 			serialPort.addEventListener(this);
 			serialPort.notifyOnDataAvailable(true);
+			portEnable=true;
 		} catch (Exception e) {
 			System.err.println(e.toString());
 		}
@@ -90,6 +106,7 @@ public class Serial implements SerialPortEventListener {
 		if (serialPort != null) {
 			serialPort.removeEventListener();
 			serialPort.close();
+			portEnable=false;
 		}
 	}
 

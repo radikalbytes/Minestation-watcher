@@ -70,10 +70,11 @@ public class Minestation implements ActionListener {
 	public static JButton btnStop;
 	public static JButton btnRead;
 	public static JButton btnWrite;
+	public static JButton btnReload;
 	public static String selectedFilePath;
 	
-	private final String version = "0.1";
-	private Serial serialPort = new Serial();  //Serial port class
+	private final String version = "0.1b";
+	public static Serial serialPort = new Serial();  //Serial port class
 //	private JCheckBox cbHardcore;
 	public static boolean start=false;
 	public timer timerPort = new timer();
@@ -169,6 +170,10 @@ public class Minestation implements ActionListener {
 		btnWrite.setActionCommand("Write");
 		btnWrite.addActionListener(this);
 		
+		btnReload = new JButton("Reload Ports");
+		btnReload.setEnabled(true);
+		btnReload.setActionCommand("Reload");
+		btnReload.addActionListener(this);
 		
 		JMenuBar menuBar = new JMenuBar();
 		JMenu helpMenu = new JMenu("Help");
@@ -193,13 +198,14 @@ public class Minestation implements ActionListener {
 		menuBar.add(helpMenu);
 		frame.setJMenuBar(menuBar);
 		
-		panel.setLayout(new MigLayout("", "[30px]10[50px]10[40px]10[50px]10", "[20px][][]"));
+		panel.setLayout(new MigLayout("", "[30px]10[50px]10[40px]10[50px]10[50px]", "[20px][][]"));
 		panel.add(label1);
 		panel.add(combo, "alignx left,aligny center");
 		panel.add(portLabel);
 		panel.add(comboPort,"alignx left,aligny center,span 2,wrap");
 		panel.add(btnStart);
-		panel.add(btnStop,"wrap");
+		panel.add(btnStop);
+		panel.add(btnReload,"wrap");
 		panel.add(TimeLabel);
 		panel.add(Timetext,"wrap");
 		panel.add(RainLabel);
@@ -431,7 +437,9 @@ public class Minestation implements ActionListener {
 					(Integer.toString(sun))+","+(Integer.toString(moon))+","+(Long.toString(raintime))+","+
 					(Long.toString(thundertime))+","+(Integer.toString(raining))+","+(Integer.toString(thundering))+
 					","+(Double.toString(posX))+","+(Double.toString(posY))+","+(Double.toString(posZ))+","+"0,"+worldName+"#";
-			System.out.println(hour+":"+minutes);
+			if (serialPort.enabled()) serialPort.outData(streamData);
+			
+		/*	System.out.println(hour+":"+minutes);
 			System.out.println(day+"/"+month+"/"+year);
 			System.out.println("sun:"+sun);
 			System.out.println("moon:"+moon);
@@ -439,7 +447,7 @@ public class Minestation implements ActionListener {
 			System.out.println(posY);
 			System.out.println(posZ);
 			System.out.println(thundering);
-			System.out.println(raining);
+			System.out.println(raining);*/
 			System.out.println(streamData);
 		/*	for (Tag st : subtags) {
 				st.print();
@@ -484,6 +492,21 @@ public class Minestation implements ActionListener {
 			     //or "save" was pressed
 			String cmd = arg0.getActionCommand();
 			
+			if(arg0.getSource() == comboPort)
+			{
+
+				int val = comboPort.getSelectedIndex();
+				//Make sure something was actually chosen
+				if(val > -1)
+				{
+					System.out.println(comboPort.getSelectedItem().toString());
+					if (serialPort.enabled()) serialPort.close();
+					
+					serialPort.initialize(comboPort.getSelectedItem().toString());
+				}
+				
+			}
+			
 			//"How to use" menu item
 			if(cmd.equals("use"))
 			{
@@ -526,6 +549,10 @@ public class Minestation implements ActionListener {
 				start=true;
 				timerPort.start();//(500);
 				
+			}
+			
+			if (cmd.equals("Reload")){
+				loadPorts();
 			}
 			
 			if(cmd.equals("Write"))
