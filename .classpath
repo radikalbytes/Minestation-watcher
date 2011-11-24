@@ -3,7 +3,7 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry excluding="src/" kind="src" path=""/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
-	<classpathentry kind="lib" path="C:/Users/Droky/workspace/Minestation/miglayout15-swing.jar" sourcepath="C:/Users/Droky/workspace/Minestation/miglayout-src.zip"/>
-	<classpathentry kind="lib" path="C:/Users/Droky/workspace/Minestation/RXTXcomm.jar"/>
+	<classpathentry kind="lib" path="/Users/Droky/Documents/java workspace/Minestation-watcher/miglayout15-swing.jar" sourcepath="C:/Users/Droky/workspace/Minestation/miglayout-src.zip"/>
+	<classpathentry kind="lib" path="/Users/Droky/Documents/java workspace/Minestation-watcher/RXTXcomm.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

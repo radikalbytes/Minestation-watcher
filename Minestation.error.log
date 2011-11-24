@@ -1,5 +1,0 @@
-java.lang.IllegalArgumentException: setSelectedIndex: 0 out of bounds
-	at javax.swing.JComboBox.setSelectedIndex(Unknown Source)
-	at minestation.Minestation.setupData(Minestation.java:326)
-	at minestation.Minestation.<init>(Minestation.java:218)
-	at minestation.Minestation.main(Minestation.java:229)

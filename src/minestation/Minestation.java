@@ -82,7 +82,7 @@ public class Minestation implements ActionListener {
 	
 	public Minestation()
 	{
-		int widthframe=250;
+		int widthframe=280;
 		int  heightframe=100;
 		//Set the system look and feel
 		
@@ -109,6 +109,7 @@ public class Minestation implements ActionListener {
 		if(System.getProperty("os.name").toLowerCase().contains("mac os x"))
 		{
 			savePath = System.getProperty("user.home") + "/Library/Application Support/minecraft/saves/";
+			widthframe=280;
 		}
 		
 		//Linux(hopefully)
@@ -197,17 +198,28 @@ public class Minestation implements ActionListener {
 		
 		menuBar.add(helpMenu);
 		frame.setJMenuBar(menuBar);
-		
+		//Mac
+		if(System.getProperty("os.name").toLowerCase().contains("mac os x"))
+		{
+			panel.setLayout(new MigLayout("",
+					"[30px]10[50px]10[140px]10[40px]",
+					"[20px][][]"));//"[30px]10[50px]10[40px]10[40px]",
+
+		}
+		else
 		panel.setLayout(new MigLayout("", "[30px]10[50px]10[40px]10[50px]10[50px]", "[20px][][]"));
+		
 		panel.add(label1);
 		panel.add(combo, "alignx left,aligny center");
-		panel.add(portLabel);
-		panel.add(comboPort,"alignx left,aligny center,span 2,wrap");
+		panel.add(portLabel,"wrap");
 		panel.add(btnStart);
 		panel.add(btnStop);
-		panel.add(btnReload,"wrap");
+		panel.add(comboPort,"span 2,wrap");
+
 		panel.add(TimeLabel);
-		panel.add(Timetext,"wrap");
+		panel.add(Timetext);
+		panel.add(btnReload,"wrap");
+
 		panel.add(RainLabel);
 		panel.add(Raintext,"wrap");
 		panel.add(StormLabel);
