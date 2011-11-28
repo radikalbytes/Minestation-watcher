@@ -8,7 +8,7 @@ import javax.swing.*;
  
 
  public class timer implements ActionListener {
-	Timer timer = new Timer(500,this); // El timer que se encarga de administrar los tiempo de repeticion
+	Timer timer = new Timer(100,this); // El timer que se encarga de administrar los tiempo de repeticion
 	public int segundos=0; // manejar el valor del contador
 	public boolean frozen=false; // manejar el estado del contador TIMER AUTOMATICO -- True Detenido | False Corriendo
  
