@@ -12,9 +12,11 @@ Executes the .jar file as an exe aplication
 `sudo chmod 777 /var/lock   (hit enter again)`  
 
 This is a request to make only the first time. It's a RXTX libraries mistake on OSX  
+ 
+* Copy the file librxtxSerial.jnlilib to your /Library/java/extensions in your MAC 
 
 * Java installed on MAC  
-* Minecraft
+* Minecraft 
 
 Select the world that you are playing on combobox, select the port created by Minestation and then push **Start button**.  
  And now… Enjoy it!!!
