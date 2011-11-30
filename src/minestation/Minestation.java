@@ -46,16 +46,19 @@ public class Minestation implements ActionListener {
 	public static JTextField Timetext;
 	public static JTextField Stormtext;
 	public static JTextField Raintext;
+	public static JTextField timerText;
 	
 	public static String savePath;
 	public static String[] filePaths;
 	public static String lastFolder;
 	private int validNames;
+	public int timerValue;
+	public static boolean simulation=false;
 	public static JLabel label1;
 	public static JLabel TimeLabel;
 	public static JLabel RainLabel;
 	public static JLabel StormLabel;	
-
+    
 	public static JComboBox combo;
 	public static JComboBox comboPort;
 	public static JLabel portLabel;
@@ -140,6 +143,17 @@ public class Minestation implements ActionListener {
 		Raintext.setColumns(10);
 		Raintext.setEditable(true);
 		
+		timerText = new JTextField();
+		timerText.setColumns(8);
+		timerText.setEditable(true);
+		timerText.setText("100");
+		JLabel timerLabel = new JLabel("Timer Refresh (ms):");
+	//	JLabel simulLabel = new JLabel ("Simulate time ");
+		JCheckBox cbSimulate = new JCheckBox("Simulate Time");
+		cbSimulate.setEnabled(true);
+		cbSimulate.setActionCommand("simulate");
+		cbSimulate.addActionListener(this);
+		
 		Stormtext = new JTextField();
 		Stormtext.setColumns(10);
 		Stormtext.setEditable(true);
@@ -202,7 +216,7 @@ public class Minestation implements ActionListener {
 		if(System.getProperty("os.name").toLowerCase().contains("mac os x"))
 		{
 			panel.setLayout(new MigLayout("",
-					"[30px]10[50px]10[140px]10[40px]",
+					"[30px]10[50px]10[40px]10[180px]20",
 					"[20px][][]"));//"[30px]10[50px]10[40px]10[40px]",
 
 		}
@@ -221,9 +235,12 @@ public class Minestation implements ActionListener {
 		panel.add(btnReload,"wrap");
 
 		panel.add(RainLabel);
-		panel.add(Raintext,"wrap");
+		panel.add(Raintext);
+		panel.add(timerLabel);
+		panel.add(timerText,"wrap");
 		panel.add(StormLabel);
-		panel.add(Stormtext,"wrap");
+		panel.add(Stormtext);
+		panel.add(cbSimulate,"wrap");
 		panel.add(btnRead);
 		panel.add(btnWrite);
 		
@@ -401,13 +418,13 @@ public class Minestation implements ActionListener {
 	public static void sendData(){
 		int tmp,tmp2; //,tmp3;
 	//	String strTmp;
-		time=Integer.parseInt(main.findTagByName("Time").getValue().toString());
+	/*	time=Integer.parseInt(main.findTagByName("Time").getValue().toString());
 		raintime=Integer.parseInt(main.findTagByName("rainTime").getValue().toString());
 		thundertime=Integer.parseInt(main.findTagByName("thunderTime").getValue().toString());
 		
 		Timetext.setText(String.valueOf(time));
 		Raintext.setText(String.valueOf(raintime));
-		Stormtext.setText(String.valueOf(thundertime));
+		Stormtext.setText(String.valueOf(thundertime));*/
 		
 		try {
 			int val = combo.getSelectedIndex();
@@ -417,8 +434,8 @@ public class Minestation implements ActionListener {
 			FileInputStream fis = new FileInputStream(new File(selectedFilePath));
 			main = Tag.readFrom(fis);
 			fis.close();
-			
-			time=Integer.parseInt(main.findTagByName("Time").getValue().toString());
+			if (simulation==false) time=Integer.parseInt(main.findTagByName("Time").getValue().toString());
+			else time+=50;
 			raintime=Integer.parseInt(main.findTagByName("rainTime").getValue().toString());
 			thundertime=Integer.parseInt(main.findTagByName("thunderTime").getValue().toString());
 			raining=Integer.parseInt(main.findTagByName("raining").getValue().toString());
@@ -552,14 +569,29 @@ public class Minestation implements ActionListener {
 				if(chooseSaveFolder()) setupData();
 			}
 			
-		
+		     
+			
+			//Simulation CheckBox
+			if(cmd.equals("simulate")){
+				simulation = !simulation;
+				if(simulation){
+					timerText.setText("200");
+					timerPort.stop();
+					timerPort.start(200);
+				}
+				
+			}
+			
+			
+			
 			//Start button pressed
 			if(cmd.equals("start"))
 			{
 				btnStart.setEnabled(false);
 				btnStop.setEnabled(true);
 				start=true;
-				timerPort.start();//(500);
+				timerValue = Integer.parseInt(timerText.getText().toString());
+				timerPort.start(timerValue);//(500);
 				
 			}
 			
