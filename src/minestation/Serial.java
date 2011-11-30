@@ -30,6 +30,7 @@ public class Serial implements SerialPortEventListener {
 	public String[] list(){
 		int cnt=0;
 		String PortNames[]=new String[30];
+		@SuppressWarnings("rawtypes")
 		Enumeration portEnum = CommPortIdentifier.getPortIdentifiers();
 		
 		// iterate through, looking for the port
@@ -58,6 +59,7 @@ public class Serial implements SerialPortEventListener {
 	public void initialize(String portName) {
 
 		CommPortIdentifier portId = null;
+		@SuppressWarnings("rawtypes")
 		Enumeration portEnum = CommPortIdentifier.getPortIdentifiers();
 
 		// iterate through, looking for the port

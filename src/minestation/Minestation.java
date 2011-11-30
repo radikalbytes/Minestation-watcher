@@ -5,7 +5,7 @@ package minestation;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
-import java.util.*;
+//import java.util.*;
 import javax.swing.*;
 
 import net.miginfocom.swing.MigLayout;
@@ -399,8 +399,8 @@ public class Minestation implements ActionListener {
 	}
 
 	public static void sendData(){
-		int tmp,tmp2,tmp3;
-		String strTmp;
+		int tmp,tmp2; //,tmp3;
+	//	String strTmp;
 		time=Integer.parseInt(main.findTagByName("Time").getValue().toString());
 		raintime=Integer.parseInt(main.findTagByName("rainTime").getValue().toString());
 		thundertime=Integer.parseInt(main.findTagByName("thunderTime").getValue().toString());
